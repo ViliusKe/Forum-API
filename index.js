@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
+import userRouter from "./src/routes/user.js";
 
 const app = express();
 
@@ -16,7 +17,7 @@ mongoose
     console.log(err);
   });
 
-// app.use("/", router);
+app.use("/user", userRouter);
 
 app.use((_req, res) => {
   return res.status(404).json({
