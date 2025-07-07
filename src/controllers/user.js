@@ -6,7 +6,7 @@ import UserModel from "../models/user.js";
 export const REGISTER_USER = async (req, res) => {
   try {
     const existingUser = await UserModel.findOne({
-      $or: [{ email: req.body.email }, { username: req.body.username }],
+      $or: [{ email: req.body.email }, { userName: req.body.userName }],
     });
 
     if (existingUser) {
@@ -48,4 +48,34 @@ export const REGISTER_USER = async (req, res) => {
 
     return res.status(500).json({ message: "Something went wrong" });
   }
+};
+
+export const LOGIN_USER = async (req, res) => {
+  const user = await UserModel.findOne({ email: req.body.email });
+
+  if (!user) {
+    return res.status(401).json({
+      message: "Wrong email",
+    });
+  }
+
+  const isPasswordMatch = bcrypt.compareSync(req.body.password, user.password);
+
+  if (!isPasswordMatch) {
+    return res.status(401).json({
+      message: "Wrong password",
+    });
+  }
+
+  const token = jwt.sign(
+    { userEmail: user.email, userId: user.id },
+    process.env.JWT_KEY,
+    { expiresIn: "24h" }
+  );
+
+  return res.status(200).json({
+    message: "Logged in successfully",
+    jwt: token,
+    body: req.body,
+  });
 };
