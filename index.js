@@ -20,7 +20,7 @@ mongoose
 
 app.use("/user", userRouter);
 
-app.use("/post", postRouter);
+app.use("/posts", postRouter);
 
 app.use((_req, res) => {
   return res.status(404).json({
