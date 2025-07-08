@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 import userRouter from "./src/routes/user.js";
+import postRouter from "./src/routes/post.js";
 
 const app = express();
 
@@ -18,6 +19,8 @@ mongoose
   });
 
 app.use("/user", userRouter);
+
+app.use("/post", postRouter);
 
 app.use((_req, res) => {
   return res.status(404).json({
