@@ -44,8 +44,6 @@ export const CREATE_POST = async (req, res) => {
 
 export const GET_ALL_POSTS = async (req, res) => {
   try {
-    const sortParam = req.query.sort;
-
     const sort =
       req.query.sort === "answers" ? { answerIds: -1 } : { createdAt: -1 };
 
@@ -57,7 +55,7 @@ export const GET_ALL_POSTS = async (req, res) => {
     );
 
     const postsWithAuthor = posts.map((post) => {
-      const author = authors.find((user) => user.id === post.authorId).lean();
+      const author = authors.find((user) => user.id === post.authorId);
       return {
         ...post._doc,
         author: author
@@ -120,9 +118,32 @@ export const GET_POST_WITH_ANSWERS = async (req, res) => {
   }
 };
 
-// export const xxx = async (req, res) => {
-//   try {
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+export const DELETE_POST = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.body.userId;
+
+    const post = await PostModel.findOne({ id: postId });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (post.authorId !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this post" });
+    }
+
+    await PostModel.deleteOne({ id: postId });
+
+    await AnswerModel.deleteMany({ postId });
+
+    return res
+      .status(200)
+      .json({ message: "Post and its answers deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Failed to delete post" });
+  }
+};
