@@ -5,7 +5,6 @@ import UserModel from "../models/user.js";
 
 export const CREATE_POST = async (req, res) => {
   try {
-    // const userId = req.userId;
     const userId = req.body.userId;
 
     const user = await UserModel.findOne({ id: userId });
@@ -44,10 +43,12 @@ export const CREATE_POST = async (req, res) => {
 
 export const GET_ALL_POSTS = async (req, res) => {
   try {
-    const sort =
-      req.query.sort === "answers" ? { answerIds: -1 } : { createdAt: -1 };
+    const filter =
+      req.query.filter === "answered"
+        ? { $exists: true, $not: { $size: 0 } }
+        : { $size: 0 };
 
-    const posts = await PostModel.find().sort(sort);
+    const posts = await PostModel.find(filter).sort({ createdAt: -1 });
 
     const authorIds = posts.map((post) => post.authorId);
     const authors = await UserModel.find({ id: { $in: authorIds } }).select(
