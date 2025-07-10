@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import AnswerModel from "../models/answer.js";
 import PostModel from "../models/post.js";
-import UserModel from "../models/user.js";
 
 export const CREATE_ANSWER = async (req, res) => {
   try {
@@ -32,8 +31,6 @@ export const CREATE_ANSWER = async (req, res) => {
 
     post.answerIds.push(savedAnswer.id);
     await post.save();
-
-    // const user = await UserModel.findOne({ id: userId }).select("id userName");
 
     return res.status(201).json({
       message: "Answer submitted",
