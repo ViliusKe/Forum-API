@@ -45,8 +45,10 @@ export const GET_ALL_POSTS = async (req, res) => {
   try {
     const filter =
       req.query.filter === "answered"
-        ? { $exists: true, $not: { $size: 0 } }
-        : { $size: 0 };
+        ? { answerIds: { $ne: [] } }
+        : req.query.filter === "unanswered"
+        ? { answerIds: { $eq: [] } }
+        : {};
 
     const posts = await PostModel.find(filter).sort({ createdAt: -1 });
 
