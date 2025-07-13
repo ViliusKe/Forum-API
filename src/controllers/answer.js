@@ -4,7 +4,7 @@ import PostModel from "../models/post.js";
 
 export const CREATE_ANSWER = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const postId = req.params.id;
     const content = req.body.content;
 
@@ -47,7 +47,7 @@ export const CREATE_ANSWER = async (req, res) => {
 export const DELETE_ANSWER = async (req, res) => {
   try {
     const answerId = req.params.answerId;
-    const userId = req.body.userId;
+    const userId = req.userId;
 
     const answer = await AnswerModel.findOne({ id: answerId });
     if (!answer) {
@@ -78,7 +78,7 @@ export const DELETE_ANSWER = async (req, res) => {
 
 export const LIKE_ANSWER = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const answerId = req.params.answerId;
 
     const answer = await AnswerModel.findOne({ id: answerId });
@@ -108,7 +108,7 @@ export const LIKE_ANSWER = async (req, res) => {
 
 export const DISLIKE_ANSWER = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const answerId = req.params.answerId;
 
     const answer = await AnswerModel.findOne({ id: answerId });

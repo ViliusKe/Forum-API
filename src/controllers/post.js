@@ -5,7 +5,7 @@ import UserModel from "../models/user.js";
 
 export const CREATE_POST = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.userId;
 
     const user = await UserModel.findOne({ id: userId });
     if (!user) {
@@ -44,11 +44,7 @@ export const CREATE_POST = async (req, res) => {
 export const GET_ALL_POSTS = async (req, res) => {
   try {
     const filter =
-      req.query.filter === "answered"
-        ? { answerIds: { $ne: [] } }
-        : req.query.filter === "unanswered"
-        ? { answerIds: { $eq: [] } }
-        : {};
+      req.query.filter === "answered" ? { answerIds: { $ne: [] } } : {};
 
     const posts = await PostModel.find(filter).sort({ createdAt: -1 });
 
@@ -124,7 +120,7 @@ export const GET_POST_WITH_ANSWERS = async (req, res) => {
 export const DELETE_POST = async (req, res) => {
   try {
     const postId = req.params.id;
-    const userId = req.body.userId;
+    const userId = req.userId;
 
     const post = await PostModel.findOne({ id: postId });
 

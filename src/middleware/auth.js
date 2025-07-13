@@ -17,7 +17,7 @@ const auth = (req, res, next) => {
     }
 
     req.body = req.body || {};
-    req.body.userId = decoded.userId;
+    req.userId = decoded.userId;
 
     return next();
   });
