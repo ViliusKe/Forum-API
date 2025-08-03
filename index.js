@@ -7,7 +7,23 @@ import postRouter from "./src/routes/post.js";
 
 const app = express();
 
-app.use(cors()); //add real URL to { origin: 'http://your-url.com' }
+const allowedOrigins = [
+  "https://forum-app-nu.vercel.app",
+  "http://localhost:3000",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log(`CORS blocked for origin: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 
 app.use(express.json());
 
